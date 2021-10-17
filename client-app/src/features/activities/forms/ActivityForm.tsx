@@ -40,13 +40,13 @@ export default observer(function ActivityForm() {
     }, [id, loadActivity]);
 
     function handleSubmit() {
-        console.log(activity);
+        // console.log(activity);
         if (activity.id.length === 0) {
             let newActivity = {
                 ...activity,
                 id: uuid()
             };
-            console.log(newActivity);
+            // console.log(newActivity);
             createActivity(newActivity).then(() => history.push(`/activities/${newActivity.id}`));
         }
         else {
