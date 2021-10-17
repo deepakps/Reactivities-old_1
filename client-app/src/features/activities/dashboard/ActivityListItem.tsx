@@ -48,7 +48,7 @@ export default function ActivityListItem({ activity }: Props) {
                 <Button
                     as={Link}
                     to={`/activities/${activity.id}`}
-                    color='blue'
+                    color='teal'
                     floated='right'
                     content='View'
                 />
