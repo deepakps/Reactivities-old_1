@@ -11,7 +11,7 @@ namespace API.Controllers
     public class ActivitiesController : BaseApiController
     {
         // private readonly DataContext _context;
-        
+
         // public ActivitiesController(DataContext context)
         // {
         //     this._context = context;
@@ -28,27 +28,32 @@ namespace API.Controllers
         public async Task<ActionResult<Activity>> GetActivity(Guid id)
         {
             // return await _context.Activities.FindAsync(id);
-            return await Mediator.Send(new Details.Query{ Id = id });
-        }
+            return await Mediator.Send(new Details.Query { Id = id });
+            // var activity = await Mediator.Send(new Details.Query { Id = id });
+
+            // if (activity == null) return NotFound();
+
+            // return activity;
+        }   
 
         [HttpPost]
         //IActionResult interface gives access to response status e.g. okay, etc.
-        public async Task<IActionResult> CreateActivity([FromBody]Activity activity)
+        public async Task<IActionResult> CreateActivity([FromBody] Activity activity)
         {
-            return Ok(await Mediator.Send(new Create.Command{ Activity = activity }));
+            return Ok(await Mediator.Send(new Create.Command { Activity = activity }));
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> EditActivity(Guid id, Activity activity)
         {
             activity.Id = id;
-            return Ok(await Mediator.Send(new Edit.Command{ Activity = activity }));
+            return Ok(await Mediator.Send(new Edit.Command { Activity = activity }));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteActivity(Guid id)
         {
-            return Ok(await Mediator.Send(new Delete.Commnad{ Id = id }));
+            return Ok(await Mediator.Send(new Delete.Commnad { Id = id }));
         }
     }
 }
