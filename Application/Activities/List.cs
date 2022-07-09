@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Core;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,9 +12,9 @@ namespace Application.Activities
 {
     public class List
     {
-        public class Query : IRequest<List<Activity>> { }
+        public class Query : IRequest<Result<List<Activity>>> { }
 
-        public class Handler : IRequestHandler<Query, List<Activity>>
+        public class Handler : IRequestHandler<Query, Result<List<Activity>>>
         {
             private readonly DataContext _context;
             private readonly ILogger<List> _logger;
@@ -23,7 +24,7 @@ namespace Application.Activities
                 this._context = context;
             }
 
-            public async Task<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<Activity>>> Handle(Query request, CancellationToken cancellationToken)
             {
                 // below line of code is demonstartion of Cancellation token.
                 // This will help cancel the request if user closes or disconnect browser.
@@ -40,7 +41,7 @@ namespace Application.Activities
                 // {
                 //     _logger.LogInformation("Task was cancelled!");
                 // }
-                return await _context.Activities.ToListAsync(cancellationToken);
+                return Result<List<Activity>>.Success(await _context.Activities.ToListAsync(cancellationToken));
             }
         }
     }

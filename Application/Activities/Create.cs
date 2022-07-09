@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Core;
 using Domain;
 using FluentValidation;
 using MediatR;
@@ -9,7 +10,10 @@ namespace Application.Activities
 {
     public class Create
     {
-        public class Command : IRequest
+        //Here Command object will actually not required to return anything.
+        //However, as we are dealing with Result, Mediator.Unit is used to 
+        //indicate we are not really returning anything.
+        public class Command : IRequest<Result<Unit>>
         {
             public Activity Activity { get; set; }
         }
@@ -22,7 +26,7 @@ namespace Application.Activities
             }
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
             public Handler(DataContext context)
@@ -30,15 +34,18 @@ namespace Application.Activities
                 this._context = context;
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 _context.Activities.Add(request.Activity);
 
-                await _context.SaveChangesAsync();
+//SaveChangesAsync will actually return no. of entries afftected to database.
+//
+                var result = await _context.SaveChangesAsync() > 0;
 
+                if (!result) return Result<Unit>.Failure("Failed to create activity");
                 //below line of code will not do anything. However, it will help understand controller that 
                 //it has finished request processing.
-                return Unit.Value;
+                return Result<Unit>.Success(Unit.Value);
             }
         }
     }
