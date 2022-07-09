@@ -18,7 +18,7 @@ namespace API.Controllers
         // }
 
         [HttpGet]
-        public async Task<ActionResult<List<Activity>>> GetActivities(CancellationToken ct)
+        public async Task<IActionResult> GetActivities(CancellationToken ct)
         {
             // return await _context.Activities.ToListAsync();
             return HandleResult(await Mediator.Send(new List.Query()));
@@ -42,7 +42,7 @@ namespace API.Controllers
         //IActionResult interface gives access to response status e.g. okay, etc.
         public async Task<IActionResult> CreateActivity([FromBody] Activity activity)
         {
-            return Ok(await Mediator.Send(new Create.Command { Activity = activity }));
+            return HandleResult(await Mediator.Send(new Create.Command { Activity = activity }));
         }
 
         [HttpPut("{id}")]
